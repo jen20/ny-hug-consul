@@ -1,0 +1,9 @@
+## General operating system artefacts
+.DS_Store
+
+## Vagrant artefacts
+.vagrant/
+
+## Terraform artefacts (state is stored remotely)
+.terraform/
+*.tfstate*

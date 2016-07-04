@@ -1,0 +1,42 @@
+{
+    "variables": {
+	"aws_access_key_id": "{{ env `AWS_ACCESS_KEY_ID` }}",
+	"aws_secret_access_key": "{{ env `AWS_SECRET_ACCESS_KEY` }}",
+        "source_ami": "{{ env `SOURCE_AMI` }}",
+        "region": "{{ env `AWS_REGION` }}"
+    },
+    "builders": [{
+        "type": "amazon-ebs",
+	"access_key": "{{ user `aws_access_key_id` }}",
+	"secret_key": "{{ user `aws_secret_access_key` }}",
+        "region": "{{user `region`}}",
+        "source_ami": "{{user `source_ami`}}",
+        "ssh_pty": true,
+        "instance_type": "t2.micro",
+
+        "ssh_username": "ubuntu",
+        "ssh_timeout": "5m",
+        "associate_public_ip_address": true,
+
+        "ami_virtualization_type": "hvm",
+        "ami_description": "Consul Server Image",
+        "ami_name": "consul-{{isotime \"2006-01-02-1504\"}}",
+        "tags": {
+            "Service": "ConsulServer",
+            "OS": "Ubuntu-16.04"
+        }
+    }],
+    "provisioners": [
+        {
+            "type": "shell",
+            "start_retry_timeout": "10m",
+            "inline": [
+                "DEBIAN_FRONTEND=noninteractive sudo apt-get update",
+                "DEBIAN_FRONTEND=noninteractive sudo apt-get install -y curl vim",
+                "curl -s https://packagecloud.io/install/repositories/ny-hug/demos/script.deb.sh | sudo bash",
+                "sudo apt-get install -y consul-aws",
+                "sudo systemctl enable consul.service"
+            ]
+        }
+    ]
+}
