@@ -4,11 +4,12 @@ provider "aws" {
 
 variable "key_name" {
   type    = "string"
+  default = "jen20"
 }
 
 variable "instance_type" {
   type    = "string"
-  default = "t2.small"
+  default = "m3.medium"
 }
 
 data "aws_ami" "consul_server" {
@@ -30,7 +31,7 @@ data "terraform_remote_state" "vpc" {
   backend = "atlas"
 
   config = {
-	  name = "ny-hug/vpc"
+	  name="jen20/ny-hug-vpc"
   }
 }
 
